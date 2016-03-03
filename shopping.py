@@ -2,46 +2,47 @@ class Cart:
 
     def __init__(self):
         self._contents = dict()
-        
+
+    def process(self, order):
+        if order.add:
+            if order.item not in self._contents:
+                self._contents[order.item] = 0
+            self._contents[order.item] += 1
+        elif order.delete:
+            if order.item in self._contents:
+                self._contents[order.item] -= 1
+                if self._contents[order.item] <= 0:
+                    del self._contents[order.item]
 
 
-def get_order():
+class Order:
 
-    print("[command] [item] (command is 'a'dd, 'd'elete, 'p'rint cart, 'q'uit) ")
-    line = input()
+    def __init__(self):
+        self.quit = False
+        self.add = False
+        self.delete = False
+        self.item = None
 
-    command = line[:1]
-    item = line[2:]
+    def get_input(self):
+        print("[command] [item] (command is 'a'dd, 'd'elete, 'p'rint cart, 'q'uit) ")
+        line = input()
 
-    return command, item
+        command = line[:1]
+        self.item = line[2:]
 
+        if command == "a":
+            self.add = True
+        elif command == "d":
+            self.delete = True
+        elif command == "q":
+            self.quit = True
 
-def add_to_cart(item, cart):
-    if not item in cart:
-        cart[item] = 0
-    cart[item] += 1
-
-
-def delete_from_cart(item, cart):
-    if item in cart and int(cart[item]) > 1:
-        cart[item] -= 1
-    else:
-        del cart[item]
-
-
-def process_order(order, cart):
-    command, item = order
-
-    if command == "a":
-        add_to_cart(item, cart)
-    elif command == "d" and item in cart:
-        delete_from_cart(item, cart)
-    elif command == "p":
-        print(cart)
-    elif command == "q":
-        return False
-
-    return True
 
 cart = Cart()
+order = Order()
+order.get_input()
 
+while not order.quit:
+    cart.process(order)
+    order = Order()
+    order.get_input()
