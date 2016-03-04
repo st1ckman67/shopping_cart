@@ -3,6 +3,9 @@ class Cart:
     def __init__(self):
         self._contents = dict()
 
+    def __repr__(self):
+        return "{0} {1}".format(Cart, self.__dict__)
+
     def process(self, order):
         if order.add:
             if order.item not in self._contents:
@@ -46,3 +49,5 @@ while not order.quit:
     cart.process(order)
     order = Order()
     order.get_input()
+
+print(cart)
